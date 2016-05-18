@@ -9,7 +9,14 @@ final class Utils {
 	static Map<String, String> parseCmdlineFlags(String argv[]) {
 		Map<String, String> flags = new HashMap<String, String>();
 		for (String flag : argv) {
-			if (flag.startsWith("--")) {	
+			if (flag.startsWith("--serverPort")) {	
+				String[] parts = flag.split("=");
+				if (parts.length == 2) {
+					flags.put(parts[0], parts[1]);
+				}
+			}
+			//Command line flag for the SSL ServerPort 
+			if (flag.startsWith("--sslServerPort")) {
 				String[] parts = flag.split("=");
 				if (parts.length == 2) {
 					flags.put(parts[0], parts[1]);
