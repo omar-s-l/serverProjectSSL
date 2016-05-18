@@ -87,7 +87,7 @@ class SimpleWebServer {
 		try {
 			webServer.start();
 			
-			// Loop so that the server stay up
+			// Loop so that the server stays up
 			while (true) {
 				if (webServer.acceptFromClient()) {
 
