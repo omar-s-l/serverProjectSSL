@@ -15,8 +15,6 @@ class Request {
 		String[] protocolAndVersion = lines.get(0).get(2).split("/");
 		this.protocol = protocolAndVersion[0];
 		this.version = protocolAndVersion[1];
-		System.out.println(protocol);
-		System.out.println(version);
 		
 		String keepAliveStr = lines.get(2).get(1);
 		if (keepAliveStr.equals("keep-alive")) {
@@ -27,13 +25,21 @@ class Request {
 	}
 
 	// Methods
-	// Getter methods
+	// Accessor methods
 	public String getMethod(){
 		return this.method;
 	}
 
 	public String getPath(){
 		return this.path; 
+	}
+	
+	public String getProtocol() {
+		return this.protocol;
+	}
+	
+	public String getVersion() {
+		return this.version;
 	}
 	
 	public boolean keepAlive() {

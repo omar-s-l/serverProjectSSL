@@ -9,9 +9,14 @@ class SimpleWebServer {
 	private ServerSocket socket;
 	private DataOutputStream toClientStream;
 	private BufferedReader fromClientStream;
+	private boolean keepConnectionAlive;
 
 	public SimpleWebServer(int serverPort) {
 		this.serverPort = serverPort;
+	}
+	
+	public void setConnectionStatus(boolean keepConnectionAlive) {
+		this.keepConnectionAlive = keepConnectionAlive;
 	}
 
 	// Binds the server to the specified port
@@ -93,6 +98,9 @@ class SimpleWebServer {
 
 					// Process the request and create a Request object
 					Request request = webServer.processGetRequest();
+					
+					// keep-alive or close
+					webServer.setConnectionStatus(request.keepAlive());
 					
 					// Use the request path to create a Response object
 					Response response = new Response(request.getPath(), request.getMethod());
