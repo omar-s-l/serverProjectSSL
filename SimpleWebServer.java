@@ -74,7 +74,7 @@ class SimpleWebServer {
 	public static void main(String[] args) throws IOException {
 		Map<String, String> flags = Utils.parseCmdlineFlags(args);
 		if (!flags.containsKey("--serverPort")) {
-			System.out.println("usage: Server --serverPort=12345");
+			System.out.println("usage: Server --sslServerPort=12345");
 			System.exit(-1);
 		}
 
