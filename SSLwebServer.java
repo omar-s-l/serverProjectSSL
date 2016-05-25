@@ -18,36 +18,36 @@ class SSLwebServer {
 	private BufferedReader fromClientStream;
 	private SSLContext sslContext; 
 
-
-
 	public SSLwebServer(int serverPort) throws Exception  {
 		this.serverPort = serverPort;
 		
 		// Hardcoding for TA grading use
+		System.out.println("Construct..."); 
 		char [] passW = "frisbee".toCharArray();
 		FileInputStream jksKey = new FileInputStream("server.jks"); 
 
 		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-		keyStore.load(jksKey, passW);	
+		keyStore.load(jksKey, passW);
+		System.out.println("KeyStore..."); 
 
 		KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 		keyManagerFactory.init(keyStore, passW);
 
 		KeyManager keyManagers[] = keyManagerFactory.getKeyManagers();
+		System.out.println("KeyManager....."); 
 
-		this.sslContext = SSLContext.getDefault();
+		this.sslContext = SSLContext.getInstance("SSL");
 		this.sslContext.init(keyManagers, null, new SecureRandom());
+		System.out.println("SSLContext....."); 
 		// System.setProperties("javax.net.ssl.keyStore", "server.jks"); 
 		// System.setProperties("javax.net.ssl.keyStorePassword", "frisbee"); 
 	}
 
 	// Binds the server to the specified port
 	public void start() throws Exception {
-
+		System.out.println("Start()....."); 
 		SSLServerSocketFactory socketFactory = sslContext.getServerSocketFactory();
 		socket = socketFactory.createServerSocket(this.serverPort);
-        SSLSocket sslsocket = (SSLSocket) socket.accept();
-
 		System.out.println("Server bound and listening to port " + this.serverPort);
 	}
 
