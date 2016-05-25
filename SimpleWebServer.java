@@ -9,7 +9,7 @@ class SimpleWebServer {
 	private ServerSocket socket;
 	private DataOutputStream toClientStream;
 	private BufferedReader fromClientStream;
-	private boolean keepConnectionAlive;
+	private boolean keepConnectionAlive = true;
 
 	public SimpleWebServer(int serverPort) {
 		this.serverPort = serverPort;
@@ -26,38 +26,52 @@ class SimpleWebServer {
 	}
 
 	// Accepts the client socket and starts the I/O streams
-	public boolean acceptFromClient() throws IOException {
+	// Improved with some code taken from instructor solution
+	public Socket acceptFromClient() throws IOException {
 		Socket clientSocket;
 		try {
 			clientSocket = socket.accept();
 		} catch (SecurityException e) {
-			System.out.println("Security manager intervened; your config is wrong. " + e);
-			return false;
+			System.out.println("The security manager intervened; your config is very wrong. " + e);
+			return null;
 		} catch (IllegalArgumentException e) {
 			System.out.println("Probably an invalid port number. " + e);
-			return false;
+			return null;
+		} catch (IOException e) {
+			System.out.println("IOException in socket.accept()");
+			return null;
 		}
 
 		// Create the I/O streams
-		toClientStream = new DataOutputStream(clientSocket.getOutputStream());
-		fromClientStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		return true;
+		try {
+			toClientStream = new DataOutputStream(clientSocket.getOutputStream());
+			fromClientStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+		} catch (IOException e) {
+			System.out.println("exception creating the stream objects.");
+		}
+		
+		return clientSocket;
 	}
 
 	public Request processGetRequest() throws IOException {
 		ArrayList<ArrayList<String>> lines = new ArrayList<ArrayList<String>>();
 		String str = ".";
+		System.out.println("p1");
 		while (!str.equals("")) {
+			System.out.println("p2");
+			System.out.println(str);
 			str = fromClientStream.readLine();
-
+			System.out.println(str);
+			System.out.println("p3");
 			// Separate parts of the response by white space
 			String[] split = str.split("\\s+");
 			ArrayList<String> wordsInLine = new ArrayList<String>();
 			for (String s : split) {
 				wordsInLine.add(s);
 			}
-
+			System.out.println("p4");
 			lines.add(wordsInLine);
+			System.out.println("p2 while loop done");
 		}
 
 		// Print out all of the lines (for testing)
@@ -68,6 +82,7 @@ class SimpleWebServer {
 		// Constructing the request object 
 		Request request = new Request(lines); 
 
+		System.out.println("end of processGetRequest");
 		return request; 
 	}
 
@@ -91,34 +106,38 @@ class SimpleWebServer {
 		// Try to start the web server
 		try {
 			webServer.start();
-			
-			// Loop so that the server stays up
 			while (true) {
-				if (webServer.acceptFromClient()) {
-
-					// Process the request and create a Request object
-					Request request = webServer.processGetRequest();
-					
-					// keep-alive or close
-					webServer.setConnectionStatus(request.keepAlive());
-					
-					// Use the request path to create a Response object
-					Response response = new Response(request.getPath(), request.getMethod());
-
-					// Print out the response (for debugging)
-					System.out.println("===========================");
-					System.out.println(response);
-					System.out.println("===========================");
-
-					// Write the response and the file to the client
-					webServer.toClientStream.writeBytes(response.toString());
-					if (response.getMethod().equalsIgnoreCase("GET") && response.getError() == 200)
-						webServer.toClientStream.write(response.getFile(), 0, response.getFile().length);
-					
+				System.out.println("while loop #1");
+				Socket clientSocket = webServer.acceptFromClient();
+				if (clientSocket != null && clientSocket.isConnected()) {
+					while (webServer.keepConnectionAlive) {
+						System.out.println("while loop #2");
+						// Process the request and create a Request object
+						Request request = webServer.processGetRequest();
+						
+						// keep-alive or close
+						webServer.setConnectionStatus(request.keepAlive());
+						
+						// Use the request path to create a Response object
+						Response response = new Response(request.getPath(), request.getMethod());
+	
+						// Print out the response (for debugging)
+						System.out.println("===========================\nResponse toString:");
+						System.out.println(response);
+						System.out.println("===========================");
+						
+						// Write the response and the file to the client
+						webServer.toClientStream.writeBytes(response.toString());
+						if (response.getMethod().equalsIgnoreCase("GET") && response.getError() == 200)
+							webServer.toClientStream.write(response.getFile(), 0, response.getFile().length);
+						
+					}
 					// Close the I/O streams
 					webServer.fromClientStream.close();
 					webServer.toClientStream.close();
-
+					clientSocket.close();
+					webServer.setConnectionStatus(true);
+					
 				} else {
 					System.out.println("Error accepting client communication.");
 				}

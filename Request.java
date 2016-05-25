@@ -23,6 +23,8 @@ class Request {
 			this.keepAlive = false;
 		}
 		
+		// DEBUGGING
+		// REMOVE THIS LATER
 		System.out.println(this.toString());
 	}
 
@@ -51,7 +53,7 @@ class Request {
 	// For debugging
 	public String toString() {
 		String str = "===========================";
-		str += "\nResponse toString:";
+		str += "\nRequest toString:";
 		str += "\nMethod: " + method;
 		str += "\nPath: " + path;
 		str += "\nProtocol: " + protocol;
