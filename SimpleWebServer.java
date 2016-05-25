@@ -106,7 +106,9 @@ class SimpleWebServer {
 					Response response = new Response(request.getPath(), request.getMethod());
 
 					// Print out the response (for debugging)
+					System.out.println("===========================");
 					System.out.println(response);
+					System.out.println("===========================");
 
 					// Write the response and the file to the client
 					webServer.toClientStream.writeBytes(response.toString());
