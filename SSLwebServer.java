@@ -2,31 +2,51 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.net.*;
+import javax.net.ssl.*;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
+import java.security.*;
+
 
 // Attributions: Several of these methods were taken from instructor solutions to Project0
 // Cite: http://stackoverflow.com/questions/12370351/setting-the-certificate-used-by-a-java-ssl-serversocket
 class SSLwebServer {
 	private final int serverPort;
-	private ServerSocket sslsocket;
+	private ServerSocket socket;
 	private DataOutputStream toClientStream;
 	private BufferedReader fromClientStream;
+	private SSLContext sslContext; 
 
-	public SSLwebServer(int serverPort) {
+
+
+	public SSLwebServer(int serverPort) throws Exception  {
 		this.serverPort = serverPort;
+		
+		// Hardcoding for TA grading use
+		char [] passW = "frisbee".toCharArray();
+		FileInputStream jksKey = new FileInputStream("server.jks"); 
+
+		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+		keyStore.load(jksKey, passW);	
+
+		KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+		keyManagerFactory.init(keyStore, passW);
+
+		KeyManager keyManagers[] = keyManagerFactory.getKeyManagers();
+
+		this.sslContext = SSLContext.getDefault();
+		this.sslContext.init(keyManagers, null, new SecureRandom());
 		// System.setProperties("javax.net.ssl.keyStore", "server.jks"); 
 		// System.setProperties("javax.net.ssl.keyStorePassword", "frisbee"); 
 	}
 
 	// Binds the server to the specified port
-	public void start() throws IOException {
+	public void start() throws Exception {
 
-		SSLServerSocketFactory sslserversocketfactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
-        SSLServerSocket sslserversocket = (SSLServerSocket) sslserversocketfactory.createServerSocket(this.serverPort);
-        
-        SSLSocket sslsocket = (SSLSocket) sslserversocket.accept();
+		SSLServerSocketFactory socketFactory = sslContext.getServerSocketFactory();
+		socket = socketFactory.createServerSocket(this.serverPort);
+        SSLSocket sslsocket = (SSLSocket) socket.accept();
 
 		System.out.println("Server bound and listening to port " + this.serverPort);
 	}
@@ -36,7 +56,7 @@ class SSLwebServer {
 		Socket clientSocket;
 		// SSLSocket clientSocket; 
 		try {
-			clientSocket = sslsocket.accept();
+			clientSocket = socket.accept();
 		} catch (SecurityException e) {
 			System.out.println("Security manager intervened; your config is wrong. " + e);
 			return false;
@@ -78,23 +98,33 @@ class SSLwebServer {
 		return request; 
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		Map<String, String> flags = Utils.parseCmdlineFlags(args);
 		if (!flags.containsKey("--sslServerPort")) {
-			System.out.println("Port not properly flagged");
+			System.out.println("usage: Server --sslServerPort=12345");
 			System.exit(-1);
 		}
+		if (!flags.containsKey("--serverPort")) {
+			System.out.println("usage: Server --serverPort=12345");
+			System.exit(-1);
+		}
+
+		int sslServerPort = -1;
 		int serverPort = -1;
 		
 		try {
-			serverPort = Integer.parseInt(flags.get("--sslServerPort"));
+			sslServerPort = Integer.parseInt(flags.get("--sslServerPort"));
+			System.out.println("sslServerPort: " + sslServerPort);
+			serverPort = Integer.parseInt(flags.get("--serverPort"));
 			System.out.println("serverPort: " + serverPort);
 		} catch (NumberFormatException e) {
 			System.out.println("Invalid port number! Must be an integer.");
 			System.exit(-1);
 		}
 
-		SSLwebServer webServer = new SSLwebServer(serverPort);
+		// Passing in both ports to the SSLwebServer
+		SSLwebServer webServer = new SSLwebServer(sslServerPort);
+
 		
 		// Try to start the web server
 		try {
