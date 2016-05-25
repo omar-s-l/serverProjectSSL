@@ -56,11 +56,8 @@ class Response {
 				// Read the file into a byte stream
 				// http://stackoverflow.com/questions/858980/file-to-byte-in-java
 				Path nioPath = Paths.get(this.path);
-				System.out.println(1);
 				this.file = Files.readAllBytes(nioPath);
-				System.out.println(2);
 				this.contentType = interpretContentType();
-				System.out.println(3);
 				this.error = 200;
 
 			} catch (FileNotFoundException e) {

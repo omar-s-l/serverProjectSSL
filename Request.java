@@ -22,6 +22,8 @@ class Request {
 		} else {
 			this.keepAlive = false;
 		}
+		
+		System.out.println(this.toString());
 	}
 
 	// Methods
@@ -44,5 +46,18 @@ class Request {
 	
 	public boolean keepAlive() {
 		return this.keepAlive;
+	}
+	
+	// For debugging
+	public String toString() {
+		String str = "===========================";
+		str += "\nResponse toString:";
+		str += "\nMethod: " + method;
+		str += "\nPath: " + path;
+		str += "\nProtocol: " + protocol;
+		str += "\nVersion: " + version;
+		str += "\nKeep-alive: " + keepAlive;
+		str += "\n===========================";
+		return str;
 	}
 }
