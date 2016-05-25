@@ -7,6 +7,7 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 
 // Attributions: Several of these methods were taken from instructor solutions to Project0
+// Cite: http://stackoverflow.com/questions/12370351/setting-the-certificate-used-by-a-java-ssl-serversocket
 class SSLwebServer {
 	private final int serverPort;
 	private ServerSocket sslsocket;
