@@ -53,26 +53,20 @@ class SimpleWebServer {
 		return clientSocket;
 	}
 
-	public Request processGetRequest() throws IOException {
+	public Request processRequest() throws IOException {
 		ArrayList<ArrayList<String>> lines = new ArrayList<ArrayList<String>>();
-		String str = ".";
-		System.out.println("p1");
-		while (!str.equals("")) {
-			System.out.println("p2");
-			System.out.println(str);
-			str = fromClientStream.readLine();
-			System.out.println(str);
-			System.out.println("p3");
-			// Separate parts of the response by white space
-			String[] split = str.split("\\s+");
+		String inputLine;;
+
+		do {
+			inputLine = fromClientStream.readLine();
+			String[] split = inputLine.split("\\s+");
 			ArrayList<String> wordsInLine = new ArrayList<String>();
 			for (String s : split) {
 				wordsInLine.add(s);
 			}
-			System.out.println("p4");
 			lines.add(wordsInLine);
-			System.out.println("p2 while loop done");
-		}
+			System.out.println(1);
+		} while ((inputLine != null) && (inputLine.length() > 0));
 
 		// Print out all of the lines (for testing)
 		for (ArrayList<String> s : lines) {
@@ -82,7 +76,6 @@ class SimpleWebServer {
 		// Constructing the request object 
 		Request request = new Request(lines); 
 
-		System.out.println("end of processGetRequest");
 		return request; 
 	}
 
@@ -113,8 +106,8 @@ class SimpleWebServer {
 					while (webServer.keepConnectionAlive) {
 						System.out.println("while loop #2");
 						// Process the request and create a Request object
-						Request request = webServer.processGetRequest();
-						
+						Request request = webServer.processRequest();
+						System.out.println("GET request process");
 						// keep-alive or close
 						webServer.setConnectionStatus(request.keepAlive());
 						
