@@ -25,6 +25,7 @@ class SSLwebServer {
 		System.out.println("Construct..."); 
 		char [] passW = "frisbee".toCharArray();
 		FileInputStream jksKey = new FileInputStream("server.jks"); 
+		System.out.println("Reading key...");
 
 		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 		keyStore.load(jksKey, passW);
@@ -37,7 +38,7 @@ class SSLwebServer {
 		System.out.println("KeyManager....."); 
 
 		this.sslContext = SSLContext.getInstance("SSL");
-		this.sslContext.init(keyManagers, null, new SecureRandom());
+		this.sslContext.init(keyManagers, null, null);
 		System.out.println("SSLContext....."); 
 		// System.setProperties("javax.net.ssl.keyStore", "server.jks"); 
 		// System.setProperties("javax.net.ssl.keyStorePassword", "frisbee"); 
