@@ -10,13 +10,23 @@ class Request {
 
 	// Constructor
 	Request(ArrayList<ArrayList<String>> lines) {
-		this.method = lines.get(0).get(0);
-		this.path = lines.get(0).get(1);
-		String[] protocolAndVersion = lines.get(0).get(2).split("/");
-		this.protocol = protocolAndVersion[0];
-		this.version = protocolAndVersion[1];
+		System.out.println("lines: " + lines);
+		if (!lines.isEmpty() && lines.get(0).size() > 0) {
+			this.method = lines.get(0).get(0);
+			this.path = lines.get(0).get(1);
+			String[] protocolAndVersion = lines.get(0).get(2).split("/");
+			this.protocol = protocolAndVersion[0];
+			this.version = protocolAndVersion[1];
+		}
+		String keepAliveStr = "";
 		
-		String keepAliveStr = lines.get(2).get(1);
+		for (ArrayList<String> line : lines) {
+			System.out.println("line: " + line);
+			if (!line.isEmpty() && line.get(0).toLowerCase().contains("connection")) {
+				keepAliveStr = line.get(1);
+			}
+		}
+		System.out.println("keepAliveStr: " + keepAliveStr);
 		if (keepAliveStr.equals("keep-alive")) {
 			this.keepAlive = true;
 		} else {

@@ -55,19 +55,21 @@ class SimpleWebServer {
 
 	public Request processRequest() throws IOException {
 		ArrayList<ArrayList<String>> lines = new ArrayList<ArrayList<String>>();
-		String inputLine;;
-
+		String inputLine;
 		do {
 			inputLine = fromClientStream.readLine();
-			String[] split = inputLine.split("\\s+");
 			ArrayList<String> wordsInLine = new ArrayList<String>();
-			for (String s : split) {
-				wordsInLine.add(s);
+			if (inputLine != null) {
+				String[] split = inputLine.split("\\s+");
+				for (String s : split) {
+					wordsInLine.add(s);
+				}
 			}
 			lines.add(wordsInLine);
 			System.out.println(1);
 		} while ((inputLine != null) && (inputLine.length() > 0));
 
+		System.out.println("Request received from client");
 		// Print out all of the lines (for testing)
 		for (ArrayList<String> s : lines) {
 			System.out.println(s);
@@ -76,7 +78,14 @@ class SimpleWebServer {
 		// Constructing the request object 
 		Request request = new Request(lines); 
 
-		return request; 
+		if (request.getMethod() != null) {
+			System.out.println("Valid request from client");
+			System.out.println("Request processed");
+			return request;
+		} else {
+			System.out.println("Invalid request from client");
+			return null;
+		}
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -102,28 +111,33 @@ class SimpleWebServer {
 			while (true) {
 				System.out.println("while loop #1");
 				Socket clientSocket = webServer.acceptFromClient();
+				
 				if (clientSocket != null && clientSocket.isConnected()) {
 					while (webServer.keepConnectionAlive) {
 						System.out.println("while loop #2");
 						// Process the request and create a Request object
 						Request request = webServer.processRequest();
-						System.out.println("GET request process");
-						// keep-alive or close
-						webServer.setConnectionStatus(request.keepAlive());
 						
-						// Use the request path to create a Response object
-						Response response = new Response(request.getPath(), request.getMethod());
-	
-						// Print out the response (for debugging)
-						System.out.println("===========================\nResponse toString:");
-						System.out.println(response);
-						System.out.println("===========================");
-						
-						// Write the response and the file to the client
-						webServer.toClientStream.writeBytes(response.toString());
-						if (response.getMethod().equalsIgnoreCase("GET") && response.getError() == 200)
-							webServer.toClientStream.write(response.getFile(), 0, response.getFile().length);
-						
+						if (request != null) {
+							// keep-alive or close
+							webServer.setConnectionStatus(request.keepAlive());
+							
+							// Use the request path to create a Response object
+							Response response = new Response(request.getPath(), request.getMethod());
+		
+							// Print out the response (for debugging)
+							System.out.println("===========================\nResponse toString from SimpleWebServer:");
+							System.out.println(response);
+							System.out.println("===========================");
+							
+							// Write the response and the file to the client
+							webServer.toClientStream.writeBytes(response.toString());
+							if (response.getMethod().equalsIgnoreCase("GET") && response.getError() == 200)
+								webServer.toClientStream.write(response.getFile(), 0, response.getFile().length);
+							System.out.println("Response sent to client");
+						} else {
+							webServer.setConnectionStatus(false);
+						}
 					}
 					// Close the I/O streams
 					webServer.fromClientStream.close();
