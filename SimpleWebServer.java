@@ -117,7 +117,6 @@ class SimpleWebServer {
 						System.out.println("while loop #2");
 						// Process the request and create a Request object
 						Request request = webServer.processRequest();
-						
 						if (request != null) {
 							// keep-alive or close
 							webServer.setConnectionStatus(request.keepAlive());
