@@ -51,18 +51,16 @@ class WebServer implements Runnable {
 		ArrayList<ArrayList<String>> lines = new ArrayList<ArrayList<String>>();
 		String inputLine = null;
 		do {
-			//while (fromClientStream.ready()) {
-				inputLine = fromClientStream.readLine();
-				//System.out.println("Client stream is ready, inputLine: " + inputLine);
-				ArrayList<String> wordsInLine = new ArrayList<String>();
-				if (inputLine != null) {
-					String[] split = inputLine.split("\\s+");
-					for (String s : split) {
-						wordsInLine.add(s);
-					}
+			inputLine = fromClientStream.readLine();
+			
+			ArrayList<String> wordsInLine = new ArrayList<String>();
+			if (inputLine != null) {
+				String[] split = inputLine.split("\\s+");
+				for (String s : split) {
+					wordsInLine.add(s);
 				}
-				lines.add(wordsInLine);
-			//}
+			}
+			lines.add(wordsInLine);
 			
 		} while ((inputLine != null) && (inputLine.length() > 0));
 
@@ -86,7 +84,7 @@ class WebServer implements Runnable {
 			start();
 			
 			while (true) {
-				System.out.println(serverName + " waiting for requests...");
+				System.out.println(serverName + " waiting for requests...\n");
 				Socket clientSocket = acceptFromClient();
 				
 				// Create the I/O streams
