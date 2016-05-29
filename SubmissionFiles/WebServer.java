@@ -103,27 +103,30 @@ class WebServer implements Runnable {
 						// Process the request and create a Request object
 						Request request = processRequest();
 						
+						// REQUEST DEBUGGING - REMOVE THIS LATER
+//						System.out.println("=====================================");
+//						System.out.println("Request toString():");
+//						System.out.println(this.toString());
+//						System.out.println("=====================================");
+						
 						if (request != null) {
 							// keep-alive or close
 							setConnectionStatus(request.keepAlive());
-							//setConnectionStatus(false);
 							
 							// Use the request path to create a Response object
 							Response response = new Response(request.getPath(), request.getMethod(), request.keepAlive());
 		
-							// Print out the response (for debugging)s
-							System.out.println("=====================================");
-							System.out.println("Response toString():");
-							System.out.println(response);
-							System.out.println("=====================================");
+							// RESPONSE DEBUGGING - REMOVE THIS LATER
+//							System.out.println("=====================================");
+//							System.out.println("Response toString():");
+//							System.out.println(response);
+//							System.out.println("=====================================");
 							
 							// Write the response and the file to the client
 							toClientStream.writeBytes(response.toString());
 							
 							if (response.getMethod().equalsIgnoreCase("GET") && response.getError() == 200)
 								toClientStream.write(response.getFile(), 0, response.getFile().length);
-							
-							//toClientStream.writeBytes("<html><head><h1>Test</h1></head></html>");
 							
 							System.out.println(serverName + " sent response to client...");
 						} else {
