@@ -80,8 +80,7 @@ class WebServerTest implements Runnable {
 		Request request = new Request(lines); 
 
 		if (request.getMethod() != null) {
-			System.out.println("Valid request from client...");
-			System.out.println("Request processed...");
+			System.out.println("Valid request received from client and processed...");
 			return request;
 		} else {
 			System.out.println("Invalid request from client...");
@@ -111,7 +110,13 @@ class WebServerTest implements Runnable {
 						System.out.println(serverName + " keeping connection alive...");
 						// Process the request and create a Request object
 						Request request = processRequest();
-						System.out.println("Request: " + request);
+						
+						// DEBUGGING
+						// REMOVE THIS LATER
+						System.out.println("=====================================");
+						System.out.println("Request toString():");
+						System.out.println(this.toString());
+						System.out.println("=====================================");
 						
 						if (request != null) {
 							// keep-alive or close
@@ -122,10 +127,10 @@ class WebServerTest implements Runnable {
 							Response response = new Response(request.getPath(), request.getMethod(), request.keepAlive());
 		
 							// Print out the response (for debugging)s
-							System.out.println("===========================");
+							System.out.println("=====================================");
 							System.out.println("Response toString() from SimpleWebServer:");
 							System.out.println(response);
-							System.out.println("===========================");
+							System.out.println("=====================================");
 							
 							// Write the response and the file to the client
 							toClientStream.writeBytes(response.toString());

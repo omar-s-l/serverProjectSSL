@@ -53,7 +53,7 @@ class WebServer implements Runnable {
 		do {
 			//while (fromClientStream.ready()) {
 				inputLine = fromClientStream.readLine();
-				System.out.println("Client stream is ready, inputLine: " + inputLine);
+				//System.out.println("Client stream is ready, inputLine: " + inputLine);
 				ArrayList<String> wordsInLine = new ArrayList<String>();
 				if (inputLine != null) {
 					String[] split = inputLine.split("\\s+");
@@ -72,8 +72,7 @@ class WebServer implements Runnable {
 		Request request = new Request(lines); 
 
 		if (request.getMethod() != null) {
-			System.out.println("Valid request from client...");
-			System.out.println("Request processed...");
+			System.out.println("Valid request received from client and processed...");
 			return request;
 		} else {
 			System.out.println("Invalid request from client...");
@@ -113,16 +112,19 @@ class WebServer implements Runnable {
 							Response response = new Response(request.getPath(), request.getMethod(), request.keepAlive());
 		
 							// Print out the response (for debugging)s
-							System.out.println("===========================");
-							System.out.println("Response toString() from SimpleWebServer:");
+							System.out.println("=====================================");
+							System.out.println("Response toString():");
 							System.out.println(response);
-							System.out.println("===========================");
+							System.out.println("=====================================");
 							
 							// Write the response and the file to the client
 							toClientStream.writeBytes(response.toString());
 							
 							if (response.getMethod().equalsIgnoreCase("GET") && response.getError() == 200)
 								toClientStream.write(response.getFile(), 0, response.getFile().length);
+							
+							//toClientStream.writeBytes("<html><head><h1>Test</h1></head></html>");
+							
 							System.out.println(serverName + " sent response to client...");
 						} else {
 							setConnectionStatus(false);

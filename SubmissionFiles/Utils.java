@@ -52,7 +52,7 @@ class Request {
 
 	// Constructor
 	Request(ArrayList<ArrayList<String>> lines) {
-		System.out.println("lines: " + lines);
+		//System.out.println("lines: " + lines);
 		if (!lines.isEmpty() && lines.get(0).size() > 0) {
 			this.method = lines.get(0).get(0);
 			this.path = lines.get(0).get(1);
@@ -63,21 +63,17 @@ class Request {
 		String keepAliveStr = "";
 		
 		for (ArrayList<String> line : lines) {
-			System.out.println("line: " + line);
+			//System.out.println("line: " + line);
 			if (!line.isEmpty() && line.get(0).toLowerCase().contains("connection")) {
 				keepAliveStr = line.get(1);
 			}
 		}
-		System.out.println("keepAliveStr: " + keepAliveStr);
+		//System.out.println("keepAliveStr: " + keepAliveStr);
 		if (keepAliveStr.equals("keep-alive")) {
 			this.keepAlive = true;
 		} else {
 			this.keepAlive = false;
 		}
-		
-		// DEBUGGING
-		// REMOVE THIS LATER
-		System.out.println(this.toString());
 	}
 
 	// Methods
