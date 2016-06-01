@@ -1,7 +1,12 @@
+// MPCS 54001 - Project 2
+// CJ Hodnefield and Omar Latif
+
+// WebServer
+// Subclass of WebServer that adds SSL functionality
+
 import java.io.*;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;

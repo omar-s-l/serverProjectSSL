@@ -1,3 +1,8 @@
+// MPCS 54001 - Project 2
+// CJ Hodnefield and Omar Latif
+
+// Utility functions and supplementary classes
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -42,6 +47,7 @@ final class Utils {
 	}
 }
 
+// Request object generated from client request
 class Request { 
 	// Path and opcode variables
 	private String path;
@@ -110,6 +116,7 @@ class Request {
 	}
 }
 
+// Response object used to send a response from server to client
 class Response {
 	// Path and opcode variables
 	private String path;
@@ -250,6 +257,7 @@ class Response {
 	}
 }
 
+// Maps permanently moved locations for redirects
 class RedirectMap {
 	private static RedirectMap instance = null;
 	private HashMap<String, String> redirectMap;

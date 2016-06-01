@@ -1,3 +1,8 @@
+// MPCS 54001 - Project 2
+// CJ Hodnefield and Omar Latif
+
+// Primary server class and main function to run the servers
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
