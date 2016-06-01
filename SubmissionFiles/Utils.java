@@ -28,7 +28,7 @@ final class Utils {
 		for (String flag : argv) {
 			
 			// Command line flag for the server port
-			if (flag.startsWith("--serverPort")) {
+			if (flag.startsWith("--port")) {
 				String[] parts = flag.split("=");
 				if (parts.length == 2) {
 					flags.put(parts[0], parts[1]);
@@ -36,7 +36,7 @@ final class Utils {
 			}
 			
 			// Command line flag for the SSL server port
-			if (flag.startsWith("--sslServerPort")) {
+			if (flag.startsWith("--sslport")) {
 				String[] parts = flag.split("=");
 				if (parts.length == 2) {
 					flags.put(parts[0], parts[1]);

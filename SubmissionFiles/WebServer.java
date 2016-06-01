@@ -154,12 +154,12 @@ class WebServer implements Runnable {
 	
 	public static void main(String[] args) throws Exception {
 		Map<String, String> flags = Utils.parseCmdlineFlags(args);
-		if (!flags.containsKey("--serverPort")) {
-			System.out.println("usage: Server --serverPort=12345");
+		if (!flags.containsKey("--port")) {
+			System.out.println("usage: Server --port=12345");
 			System.exit(-1);
 		}
-		if (!flags.containsKey("--sslServerPort")) {
-			System.out.println("usage: Server --sslServerPort=12345");
+		if (!flags.containsKey("--sslport")) {
+			System.out.println("usage: Server --sslport=12345");
 			System.exit(-1);
 		}
 
@@ -167,12 +167,12 @@ class WebServer implements Runnable {
 		int sslServerPort = -1;
 		
 		try {
-			serverPort = Integer.parseInt(flags.get("--serverPort"));
+			serverPort = Integer.parseInt(flags.get("--port"));
 			System.out.println("serverPort: " + serverPort);
-			sslServerPort = Integer.parseInt(flags.get("--sslServerPort"));
+			sslServerPort = Integer.parseInt(flags.get("--sslport"));
 			System.out.println("sslServerPort: " + sslServerPort);
 		} catch (NumberFormatException e) {
-			System.out.println("Invalid port number! Must be an integer.");
+			System.out.println("Invalid port number! Must be an integer. Port: " + flags.get("--serverPort"));
 			System.exit(-1);
 		}
 		

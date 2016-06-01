@@ -3,7 +3,7 @@ MPCS 54001 - Networks
 
 CJ Hodnefield and Omar Latif
 
-The main function to run the server is in WebServer.java, with flags --serverPort=<port#> and --sslServerPort=<SSLport#>.
+The main function to run the server is in WebServer.java, with flags --serverPort=<port#> and --sslServerPort=<SSLport#>. Make sure all the non-.java files are in the same directory as WebServer.java.
 
 WebServer.java:
 This is a Runnable class that handles all of the basic functionality of our server. As mentioned above, the main function to run the server also resides here.
